@@ -17,7 +17,10 @@ APS(Airplay Server) is a complete implementation of Airplay server including scr
 | **Linux**   | [![Build on Linux](https://github.com/air-display/apsdk/actions/workflows/build-linux.yml/badge.svg)](https://github.com/air-display/apsdk/actions/workflows/build-linux.yml) |
 
 # About fairplay
-This project includes a submodule named [fairplay](https://github.com/air-display/fairplay) located in [third-party\fairplay](third-party\fairplay). Because the [fairplay](https://github.com/air-display/fairplay) project is currently private, if you perform submodule updating, you will get permission errors. Actually you can build apsdk project without this submodule (obviously it will not work because apsdk will use empty implementation).
+While the original project kept its fairplay implementation private, with a dummy (empty) public implementation,
+the widely-used [GPL V3 implementation by Esteban Kubata](https://github.com/EstebanKubata/playfair)
+has been substituted for the dummy implementation.
+
 
 # Windows
 ## Dependencies: 
@@ -37,7 +40,7 @@ No extra dependencies.
 Run the generate_xcode_proj.bat to generate the project files. Build the xCode project.
 
 ## Runtime requirements
-With system build-in Bounjour service installed, no extra runtime requirements.
+With system build-in Bonjour service installed, no extra runtime requirements.
 
 
 # Android
@@ -58,7 +61,10 @@ sudo apt-get install libavahi-compat-libdnssd-dev
 ```
 
 ## Build instructions:
-Run the generate_linux_proj.bat to generate the GUN make files.
+Run the generate_linux_proj.sh to generate the GNU make files.
+
+* To build the demo, edit "OFF" CMakeLists.txt in the top directory to "ON" for building the demo, and building a static libap.
+The n run `cmake . ; make ` in the top directory.    The demo is lacking back ends for playing video and audio.
 
 ## Runtime requirements
 [avahi-packages](https://launchpad.net/ubuntu/+source/avahi) are needed, at least the following pacakges are installed:

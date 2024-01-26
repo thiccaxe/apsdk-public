@@ -1,5 +1,6 @@
 # About Fairplay
 
-https://github.com/air-display/fairplay
-
-This is a private implementation currently
+The dummy implementation in playfair.c.in  supplied with the original project has
+here been replaced with playfair_fairplay.c.in, which accesses the
+[GPL v3  implementation "playfair" by Estaban Kubata](https://github.com/EstebanKubata/playfair/)
+which has also been added here.

@@ -6,10 +6,12 @@ if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/details/fairplay.c)
 else()
     message(STATUS "Generating placeholder of fairplay.c")
     configure_file(
-        fairplay.c.in
+        fairplay_playfair.c.in
         ${CMAKE_CURRENT_BINARY_DIR}/fairplay.c
         COPYONLY)
 endif()
+
+add_subdirectory(playfair)
 
 file(GLOB_RECURSE fairplay_SRC_FILES
     "./*.c"
