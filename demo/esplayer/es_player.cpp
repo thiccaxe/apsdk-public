@@ -226,7 +226,7 @@ bool es_player::feed_audio(uint8_t *data, int len) {
 }
 
 bool es_player::create_video_decoder_resource(const uint8_t *config, int len) {
-  AVCodec *codec = avcodec_find_decoder(AVCodecID::AV_CODEC_ID_H264);
+  const AVCodec *codec = avcodec_find_decoder(AVCodecID::AV_CODEC_ID_H264);
   if (codec) {
     AVCodecContext *codec_ctx = avcodec_alloc_context3(codec);
     if (codec_ctx) {
@@ -271,7 +271,7 @@ void es_player::render_video_frame(AVFrame *frm) {
 }
 
 bool es_player::create_audio_decoder_resource(const uint8_t *config, int len) {
-  AVCodec *codec = avcodec_find_decoder_by_name("libfdk_aac");
+  const AVCodec *codec = avcodec_find_decoder_by_name("libfdk_aac");
   if (codec) {
     AVCodecContext *codec_ctx = avcodec_alloc_context3(codec);
     if (codec_ctx) {

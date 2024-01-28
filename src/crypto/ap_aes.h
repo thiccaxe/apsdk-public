@@ -4,6 +4,7 @@
 
 #include <array>
 
+#include <cstdint>
 #include <opensslaes/aes.h>
 
 class ap_aes_ctr128 {

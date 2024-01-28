@@ -3,6 +3,7 @@
 .out.*
 .vscode
 /build.*
+.idea
 platforms/android/apsdk/*.project
 platforms/android/apsdk/.settings/*.prefs
 platforms/android/apsdk/apsdk/*.classpath
@@ -13,3 +14,16 @@ platforms/android/apsdk/mobile/*.classpath
 platforms/android/apsdk/mobile/*.project
 platforms/android/apsdk/mobile/.settings/*.prefs
 platforms/android/apsdk/.idea/gradle.xml
+
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+cmake-build-debug

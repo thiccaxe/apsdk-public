@@ -19,6 +19,8 @@ target_link_libraries(aps-demo PRIVATE
   esplayer
 )
 
+
+
 if(WINDOWS)
     set_target_properties(aps-demo PROPERTIES FOLDER demo)
 endif(WINDOWS)

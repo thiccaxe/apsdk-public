@@ -152,7 +152,7 @@ elseif (ANDROID)
     target_link_libraries(${PROJECT_NAME} PUBLIC mdnssd log)
 elseif (LINUX)
     # pthread is required by asio standalone
-    target_link_libraries(${PROJECT_NAME} PUBLIC 
+    target_link_libraries(${PROJECT_NAME} PUBLIC
         pthread
         dns_sd
     )
