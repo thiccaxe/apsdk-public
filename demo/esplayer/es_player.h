@@ -6,6 +6,7 @@
 #include <deque>
 #include <memory>
 #include <mutex>
+#include <thread>
 
 #ifdef __cplusplus
 extern "C" {
