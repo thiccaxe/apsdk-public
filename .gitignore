@@ -13,3 +13,12 @@ platforms/android/apsdk/mobile/*.classpath
 platforms/android/apsdk/mobile/*.project
 platforms/android/apsdk/mobile/.settings/*.prefs
 platforms/android/apsdk/.idea/gradle.xml
+build/*
+**/CMakeFiles/*
+CMakeFiles/*
+*.a
+*.so
+Makefile
+*.cmake
+demo/aps-demo
+CMakeCache.txt
