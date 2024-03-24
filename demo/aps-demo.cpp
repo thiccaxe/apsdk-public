@@ -110,6 +110,8 @@ public:
   virtual void on_video_play(const uint64_t session_id, const std::string &location, const float start_pos) override {
     LOGI() << "on_video_play: " << location << ", session: " << session_id << std::endl;
     session_ = session_id;
+    std::string command = "nohup ffplay " + location + " &";
+    system(command.c_str());
   }
 
   virtual void on_video_scrub(const uint64_t session_id, const float position) override {
@@ -138,6 +140,11 @@ public:
     if (session_ != session_id) {
       LOGE() << "Invalid session id: " << session_id << ", current session: " << session_ << std::endl;
     }
+    playback_info.position = 18;
+    playback_info.duration = 32;
+    playback_info.rate = 1;
+    playback_info.readyToPlay = 1;
+
   }
 };
 

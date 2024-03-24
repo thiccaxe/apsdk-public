@@ -1,5 +1,6 @@
 #include <cstring>
 #include <vector>
+#include <cstdint>
 
 #include "ap_aes.h"
 
