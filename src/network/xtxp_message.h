@@ -119,6 +119,8 @@ public:
   response &with_status(status_type_t code);
 
   std::string serialize() const;
+
+  void dump() const;
 };
 
 #if defined(NDEBUG)

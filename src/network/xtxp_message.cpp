@@ -114,5 +114,27 @@ std::string response::serialize() const {
   return oss.str();
 }
 
+void response::dump() const {
+  std::ostringstream oss;
+  oss << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< " << std::endl
+      << "    Header:" << std::endl;
+  for (auto &header : headers)
+    oss << "        " << header.first << ": " << header.second << std::endl;
+
+#ifdef DUMP_REQUEST_BODY
+  oss << "    Body:";
+  if (0 == content_length)
+    oss << "<EMPTY>";
+
+  for (int i = 0; i < content_length; i++) {
+    if (std::isprint(content[i]))
+      oss << content[i];
+    else
+      oss << '.';
+  }
+#endif
+  LOGD() << oss.str();
+}
+
 } // namespace network
 } // namespace aps
