@@ -424,6 +424,7 @@ void ap_airplay_connection::get_info_handler(const request &req, response &res) 
       )
   );
   // clang-format on
+  std::cout << info.dump() << std::endl;
 
   res.with_status(ok).with_content_type(APPLICATION_BINARY_PLIST).with_content(info.to_bytes_array());
 }

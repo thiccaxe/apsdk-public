@@ -257,6 +257,7 @@ void xtxp_connection_base::on_message_content_received(const asio::error_code &e
 void xtxp_connection_base::post_send_response(const response &res) {
   std::ostream os(&out_stream_);
   os << res.serialize();
+  res.dump();
   asio::async_write(socket_,
                     out_stream_,
                     asio::bind_executor(strand_,
