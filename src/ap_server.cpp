@@ -82,26 +82,46 @@ protected:
     }
 
     airplay_net_service_.add_txt_record("deviceId", ap_config_->macAddress());
+    printf("airplay_net_service deviceID %s\n",ap_config_->macAddress().c_str());
     airplay_net_service_.add_txt_record("features", ap_config_->features_hex_string());
+    printf("airplay_net_service features %s\n",ap_config_->features_hex_string().c_str());
     airplay_net_service_.add_txt_record("model", ap_config_->model());
+    printf("airplay_net_service model %s\n",ap_config_->model().c_str());
     airplay_net_service_.add_txt_record("srcvers", ap_config_->serverVersion());
+    printf("airplay_net_service srcvers %s\n",ap_config_->serverVersion().c_str());
     airplay_net_service_.add_txt_record("vv", ap_config_->vv());
+    printf("airplay_net_service vv %d\n",ap_config_->vv());
     airplay_net_service_.add_txt_record("pi", ap_config_->pi());
+    printf("airplay_net_service pi %s\n",ap_config_->pi().c_str());
     airplay_net_service_.add_txt_record("pk", ap_config_->pk());
+    printf("airplay_net_service pk %s\n",ap_config_->pk().c_str());
     airplay_net_service_.add_txt_record("flags", ap_config_->flags());
-
+    printf("airplay_net_service flags %s\n",ap_config_->flags().c_str());
+    
     raop_net_service_.add_txt_record("am", ap_config_->model());
+    printf("raop_net_service am %s\n",ap_config_->model().c_str());
     raop_net_service_.add_txt_record("cn", ap_config_->audioCodecs());
+    printf("raop_net_service cn %s\n",ap_config_->audioCodecs().c_str());
     raop_net_service_.add_txt_record("et", ap_config_->encryptionTypes());
+    printf("raop_net_service et %s\n",ap_config_->encryptionTypes().c_str());
     raop_net_service_.add_txt_record("ft", ap_config_->features_hex_string());
+    printf("raop_net_service ft %s\n",ap_config_->features_hex_string().c_str());
     raop_net_service_.add_txt_record("md", ap_config_->metadataTypes());
+    printf("raop_net_service md %s\n",ap_config_->metadataTypes().c_str());
     raop_net_service_.add_txt_record("pk", ap_config_->pk());
+    printf("raop_net_service pk %s\n",ap_config_->pk().c_str());
     raop_net_service_.add_txt_record("tp", ap_config_->transmissionProtocol());
+    printf("raop_net_service tp %s\n",ap_config_->transmissionProtocol().c_str());
     raop_net_service_.add_txt_record("vs", ap_config_->serverVersion());
+    printf("raop_net_service vs %s\n",ap_config_->serverVersion().c_str());
     raop_net_service_.add_txt_record("vv", ap_config_->vv());
+    printf("raop_net_service vv %d\n",ap_config_->vv());
     raop_net_service_.add_txt_record("vn", "65537");
+    printf("raop_net_service vn %s\n","65537");
     raop_net_service_.add_txt_record("da", "true");
+    printf("raop_net_service da %s\n","true");
     raop_net_service_.add_txt_record("sf", "0x04");
+    printf("raop_net_service sf %s\n","0x04");
 
     std::string airplay_service_name = ap_config_->name();
     if (airplay_net_service_.publish(airplay_service_name, airplay_tcp_service_->port())) {
