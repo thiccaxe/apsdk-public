@@ -1,5 +1,5 @@
 #include <network/xtxp_connection_base.h>
-
+#include <stdio.h>
 namespace aps {
 namespace network {
 
@@ -95,16 +95,19 @@ void xtxp_connection_base::register_request_route(const request_route_t &route) 
   route_table_.register_request_route(route);
 }
 
-void xtxp_connection_base::start() { post_receive_message_head(); }
+void xtxp_connection_base::start() {
+  post_receive_message_head(); }
 
 void xtxp_connection_base::send_request(const request &req) {
   std::string data = req.serialize();
   socket_.send(asio::buffer(data.data(), data.length()));
 }
 
-bool xtxp_connection_base::is_reversed() { return is_reversed_; }
+bool xtxp_connection_base::is_reversed() {
+  return is_reversed_; }
 
-void xtxp_connection_base::reverse() { is_reversed_ = true; }
+void xtxp_connection_base::reverse() {
+  is_reversed_ = true; }
 
 void xtxp_connection_base::add_common_header(const request &req, response &res) {}
 
@@ -257,7 +260,7 @@ void xtxp_connection_base::on_message_content_received(const asio::error_code &e
 void xtxp_connection_base::post_send_response(const response &res) {
   std::ostream os(&out_stream_);
   os << res.serialize();
-  res.dump();
+  //res.dump();
   asio::async_write(socket_,
                     out_stream_,
                     asio::bind_executor(strand_,
@@ -277,6 +280,7 @@ void xtxp_connection_base::on_response_sent(const asio::error_code &e, std::size
 
 void xtxp_connection_base::handle_socket_error(const asio::error_code &e) {
   switch (e.value()) {
+
   case asio::error::eof:
     return;
   case asio::error::connection_reset:
@@ -338,6 +342,7 @@ void xtxp_connection_base::process_request() {
 
   add_common_header(request_, res);
 
+  print_response(res, " ");
   post_send_response(res);
 }
 
@@ -345,3 +350,5 @@ void xtxp_connection_base::process_response() {}
 
 } // namespace network
 } // namespace aps
+
+

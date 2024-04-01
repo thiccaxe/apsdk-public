@@ -5,6 +5,8 @@
 #include <functional>
 #include <string>
 #include <thread>
+#include <map>
+#include <network/xtxp_message.h>
 
 #if __ANDROID__
 #include <jni.h>
@@ -186,4 +188,7 @@ template <typename Function> aps_thread create_aps_thread(Function f) {
   });
 }
 
+using namespace aps::network;
+void print_request(const request& req, const char * handler);
+void print_response(const response& res, const char * handler);
 #endif // !UTILS_H_

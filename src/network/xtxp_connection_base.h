@@ -125,3 +125,5 @@ typedef std::shared_ptr<xtxp_connection_base> xtxp_connection_base_ptr;
 typedef std::weak_ptr<xtxp_connection_base> xtxp_connection_base_weak_ptr;
 } // namespace network
 } // namespace aps
+
+void print_header(aps::network::header_map headers);

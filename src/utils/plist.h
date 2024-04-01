@@ -5,6 +5,18 @@
 #include <cstdint>
 #include <vector>
 
+#ifdef USE_LIBPLIST
+#include <stdio.h>
+#include <string.h>
+#include <plist/plist.h>
+extern "C" {
+  void plist_print_xml(const uint8_t *plist_data, uint32_t datalen);
+}
+#else
+void plist_print_xml(const uint8_t *plist_data, uint32_t datalen);
+#endif
+
+
 #define PLIST_TYPE_PRIMITIVE 0x00
 #define PLIST_PRIMITIVE_TRUE 0x08
 #define PLIST_PRIMITIVE_FALSE 0x09
@@ -43,7 +55,7 @@ const plist_object_t *plist_object_dict_get_value(const plist_object_t *object, 
 const plist_object_t *plist_object_dict_get_key_value(const plist_object_t *object, const char **pkey, uint32_t idx);
 
 plist_object_t *plist_object_from_bplist(const uint8_t *data, uint32_t datalen);
-int plist_object_to_bplist(plist_object_t *object, uint8_t **data, uint64_t *datalen);
+int plist_object_to_bplist(const plist_object_t *object, uint8_t **data, uint64_t *datalen);
 
 void plist_object_destroy(plist_object_t *object);
 
@@ -87,7 +99,7 @@ public:
     std::vector<uint8_t> buf;
     uint8_t *data = 0;
     uint64_t length = 0;
-    plist_object_to_bplist(obj_, &data, &length);
+    plist_object_to_bplist((const plist_object_t *) obj_, &data, &length);
     buf.assign(data, data + length);
     free(data);
     return buf;

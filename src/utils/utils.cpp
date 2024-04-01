@@ -3,9 +3,11 @@
 #include <ctime>
 #include <regex>
 #include <time.h>
+#include <stdio.h>
 
 #include <hlsparser/hlsparse.h>
 #include <utils/utils.h>
+#include "plist.h"
 
 using namespace std::chrono;
 
@@ -121,3 +123,64 @@ std::string get_best_quality_stream_uri(const char *data, uint32_t length) {
 
   return std::string();
 }
+
+void print_content(const xtxp_message &msg, const char * msg_type) {
+  if (msg.content_length <= 0) return;
+  int len = msg.content_length;
+  if (!msg.content_type.compare(APPLICATION_BINARY_PLIST)) {  
+      printf("----------------------begin %s plist ---------------------------\n", msg_type);
+      plist_print_xml(msg.content.data(), (uint32_t)msg.content.size());
+      printf("----------------------end %s plist -----------------------------\n", msg_type);
+  } else   if (!msg.content_type.compare(APPLICATION_MPEGURL)) {
+  } else   if (!msg.content_type.compare(APPLICATION_OCTET_STREAM)) {
+    printf("----------------------begin %s octet_stream ---------------------------\n", msg_type);
+    printf(" %2.2x ",msg.content[0]);
+    for ( int i = 1 ; i < len ; i++) {
+      if (i%16 == 0) printf("\n");
+      if (i%8 == 0) printf(" ");
+      printf("%2.2x ", msg.content[i]);
+    }
+    printf("\n");
+    printf("----------------------end %s octent stream -----------------------------\n", msg_type);
+  } else   if (!msg.content_type.compare(APPLICATION_DMAP_TAGGED)) {
+  } else   if (!msg.content_type.compare(TEXT_APPLE_PLIST_XML)) {
+  } else   if (!msg.content_type.compare(TEXT_PARAMETERS)) {
+  } else   if (!msg.content_type.compare(IMAGE_JPEG)) {
+  } else   if (!msg.content_type.compare(IMAGE_PNG)) {
+  } else {
+    printf("Unknown content_type %s\n", msg.content_type);
+  }
+}
+
+void print_request(const request &req, const char *handler) {
+  printf("\nnew request received: %s\n",handler);
+  printf("    Request: %s %s %s\n",req.method.c_str(), req.uri.c_str(), req.scheme_version.c_str());
+  printf("    Header:\n");
+  for (std::map<std::string, std::string>::const_iterator it = req.headers.begin();
+       it != req.headers.end(); ++it) {
+    printf("        %s:%s\n",it->first.c_str(),it->second.c_str());
+  }
+  printf("    Body: (%s) length %d\n", req.content_type.c_str(), req.content_length);
+  if (req.content_length > 0) {
+    print_content(req, "request");
+  }
+  printf("\n");
+}
+  
+void print_response(const response &res, const char *handler) {
+  printf("*** response sent: %s\n",handler);
+  printf("    Request: %s %d %s\n",res.scheme_version.c_str(), res.status_code, res.status_text.c_str());
+  printf("    Header:\n");
+  for (std::map<std::string, std::string>::const_iterator it = res.headers.begin();
+       it != res.headers.end(); ++it) {
+    printf("        %s:%s\n",it->first.c_str(),it->second.c_str());
+  }
+  printf("        Content-Type: %s\n",res.content_type.c_str());
+  printf("        Content-Length: %d\n",res.content_length);
+  printf("    Body: (%s) length %d\n", res.content_type.c_str(), res.content_length);
+  if (res.content_length > 0) {
+    print_content(res, "response");
+  }
+  printf("\n");
+}
+  

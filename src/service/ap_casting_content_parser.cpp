@@ -1,11 +1,12 @@
 ﻿#include <regex>
-
+#include <stdio.h>
 #include <service/ap_casting_content_parser.h>
 
 bool aps::ap_casting_content_parser::get_volume_value(float &value, const char *content) {
   static std::regex pattern("volume: ([-+]?[0-9]+\\.[0-9]+)");
   std::cmatch groups;
-
+  printf(" *** ap_casting_content_parser::get_volume_value\n");
+  
   if (std::regex_search(content, groups, pattern)) {
     if (groups.size() > 1) {
       value = std::strtof(groups.str(1).c_str(), nullptr);
@@ -20,6 +21,7 @@ bool aps::ap_casting_content_parser::get_progress_values(uint64_t &start, uint64
                                                          const char *content) {
   static std::regex pattern("progress: ([0-9]+)\\/([0-9]+)\\/([0-9]+)");
   std::cmatch groups;
+  printf(" *** ap_casting_content_parser::get_progess_values\n");
 
   if (std::regex_search(content, groups, pattern)) {
     if (groups.size() > 3) {
@@ -36,7 +38,8 @@ bool aps::ap_casting_content_parser::get_progress_values(uint64_t &start, uint64
 bool aps::ap_casting_content_parser::get_play_parameters(std::string &location, float &start, const char *content) {
   static std::regex pattern("Content-Location: (.*)\\nStart-Position: ([-+]?[0-9]+\\.[0-9]+)");
   std::cmatch groups;
-
+  printf(" *** ap_casting_content_parser::get_play_parameters\n");
+  
   if (std::regex_search(content, groups, pattern)) {
     if (groups.size() > 2) {
       location = groups.str(1);
@@ -51,7 +54,7 @@ bool aps::ap_casting_content_parser::get_play_parameters(std::string &location, 
 bool aps::ap_casting_content_parser::get_scrub_position(float &postion, const char *content) {
   static std::regex pattern(R"(\/scrub\?position=([0-9]+\.[0-9]+))");
   std::cmatch groups;
-
+  printf(" *** ap_casting_content_parser::get_scrub_position\n");
   if (std::regex_search(content, groups, pattern)) {
     if (groups.size() > 1) {
       postion = std::strtof(groups.str(1).c_str(), nullptr);
@@ -65,7 +68,7 @@ bool aps::ap_casting_content_parser::get_scrub_position(float &postion, const ch
 bool aps::ap_casting_content_parser::get_rate_value(float &rate, const char *content) {
   static std::regex pattern(R"(\/rate\?value=([0-9]+\.[0-9]+))");
   std::cmatch groups;
-
+  printf(" *** ap_casting_content_parser::get_rate_value\n");
   if (std::regex_search(content, groups, pattern)) {
     if (groups.size() > 1) {
       rate = std::strtof(groups.str(1).c_str(), nullptr);
@@ -80,6 +83,7 @@ void aps::ap_casting_content_parser::get_user_agent_version(std::string &agent, 
                                                             const char *content) {
   static std::regex pattern(R"((.*)\/([0-9]+)(?:\.([0-9]+)(?:\.([0-9]+)(?:\.([0-9]+))?)?)?)");
   std::cmatch groups;
+  printf(" *** ap_casting_content_parser::get_user_agent_version\n");
   memset(&version, 0, sizeof(aps::agent_version_t));
   if (std::regex_search(content, groups, pattern)) {
     if (groups.size() > 1) {

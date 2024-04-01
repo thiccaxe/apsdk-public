@@ -101,7 +101,28 @@ elseif (MACOSX)
 elseif (IOS)
 endif()
 
+if (LINUX)
+find_package(PkgConfig REQUIRED)	
+ pkg_search_module(PLIST libplist>=2.0)
+  if(NOT PLIST_FOUND)
+    pkg_search_module(PLIST REQUIRED libplist-2.0)
+  endif()
+  find_library( LIBPLIST ${PLIST_LIBRARIES} PATH ${PLIST_LIBDIR} )
+    if( LIBPLIST )
+        message( STATUS "libplist found:" ${LIBPLIST} )
+    	add_definitions( -DUSE_LIBPLIST )
+    else()	       
+      message( STATUS "libplist not found:" )
+    endif() 	       
+endif()
+
+
+
 add_definitions(-Daps_EXPORTS)
+
+
+
+
 
 # Output
 add_library(${PROJECT_NAME} ${APS_LIBRARY_TYPE}
@@ -151,8 +172,12 @@ if (APPLE)
 elseif (ANDROID)
     target_link_libraries(${PROJECT_NAME} PUBLIC mdnssd log)
 elseif (LINUX)
-    # pthread is required by asio standalone
-    target_link_libraries(${PROJECT_NAME} PUBLIC 
+
+# pthread is required by asio standalone
+
+
+    target_link_libraries(${PROJECT_NAME} PUBLIC
+    ${LIBPLIST} 			  
         pthread
         dns_sd
     )

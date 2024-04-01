@@ -46,6 +46,30 @@ struct plist_object_s {
   } value;
 };
 
+#ifdef USE_LIBPLIST
+extern "C" {
+  void plist_print_xml(const uint8_t *plist_data, uint32_t datalen) {
+    plist_t plist_root_node = NULL;
+    plist_from_bin( (const char *) plist_data, datalen, &plist_root_node);
+    if (!plist_root_node) {
+      printf("plist_print_xml: data is not plist\n");
+    } else {
+      char * plist_xml;
+      uint32_t plist_len;
+      plist_to_xml(plist_root_node, &plist_xml, &plist_len);
+      printf("%s\n",plist_xml);
+      free(plist_xml);
+      plist_free(plist_root_node);
+    }
+  }
+}
+#else
+void plist_print_xml(const uint8_t *plist_data, uint32_t datalen) {
+  // do nothing
+}
+#endif
+
+
 static int parse_integer(const uint8_t *data, uint64_t dataidx, uint8_t length, int64_t *value) {
   assert(data);
   assert(value);
@@ -180,7 +204,7 @@ static uint8_t blist_integer_length(int64_t value) {
   }
 }
 
-static void bplist_analyze(plist_object_t *object, uint64_t *objects, uint64_t *bytes, uint64_t *refs) {
+static void bplist_analyze(const plist_object_t *object, uint64_t *objects, uint64_t *bytes, uint64_t *refs) {
   uint64_t i;
 
   *objects += 1;
@@ -263,7 +287,7 @@ static int64_t bplist_serialize_string(int64_t *reftab, uint64_t *reftabidx, uin
 }
 
 static int64_t bplist_serialize_object(int64_t *reftab, uint64_t *reftabidx, uint8_t reflen, uint8_t *data,
-                                       uint64_t *dataidx, plist_object_t *object) {
+                                       uint64_t *dataidx, const plist_object_t *object) {
   int64_t objectid;
   uint64_t i;
 
@@ -938,7 +962,7 @@ plist_object_t *plist_object_from_bplist(const uint8_t *data, uint32_t datalen) 
   return object;
 }
 
-int plist_object_to_bplist(plist_object_t *object, uint8_t **data, uint64_t *datalen) {
+int plist_object_to_bplist(const plist_object_t *object, uint8_t **data, uint64_t *datalen) {
   uint64_t objects, bytes, refs;
   uint8_t reflen, offlen;
   uint8_t *buf;
@@ -1063,7 +1087,7 @@ void plist_object_destroy(plist_object_t *object) {
 //"integer"); 	plist_object_integer_get_value(intobj, &intval);
 // printf("Integer value: %d\n", (int) intval);
 //
-//	plist_object_to_bplist(object, &outdata, &outdatalen);
+//	plist_object_to_bplist((const plist_object t*)object, &outdata, &outdatalen);
 //	printf("Parsed and serialized bplist: ");
 //	for (i=0; i<outdatalen; i++) {
 //		printf("\\x%02x", outdata[i]);
@@ -1093,7 +1117,7 @@ void plist_object_destroy(plist_object_t *object) {
 //			plist_object_string("second")
 //		)
 //	);
-//	plist_object_to_bplist(obj, &data, &datalen);
+//	plist_object_to_bplist((const bplist_object *) obj, &data, &datalen);
 //	printf("Serialized bplist: ");
 //	for (i=0; i<datalen; i++) {
 //		printf("\\x%02x", data[i]);
