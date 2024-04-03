@@ -124,14 +124,72 @@ std::string get_best_quality_stream_uri(const char *data, uint32_t length) {
   return std::string();
 }
 
+static int parse_dmap_header(const unsigned char *metadata, char *tag, int *len) {
+    const unsigned char *header = metadata;
+
+    bool istag = true;
+    for (int i = 0; i < 4; i++) {
+        tag[i] =  (char) *header;
+	if (!isalpha(tag[i])) {
+            istag = false;
+        }
+        header++;
+    }
+
+    *len = 0;
+    for (int i = 0; i < 4; i++) {
+        *len <<= 8;
+        *len += (int) *header;
+        header++;
+    }
+    if (!istag || *len < 0) {
+        return 1;
+    }
+    return 0;
+}
+
+void parse_metadata(const void *buffer, int buflen) {
+    char dmap_tag[5] = {0x0};
+    const unsigned char *metadata = (const  unsigned char *) buffer;
+    int datalen;
+    int count = 0;
+
+    if (buflen < 8) {
+      printf("invalid metadata, length %d < 8\n", buflen);
+        return;
+    } else if (parse_dmap_header(metadata, dmap_tag, &datalen)) {
+      printf("invalid metadata, tag [%s]  datalen %d\n", dmap_tag, datalen);
+        return;
+    }
+    metadata += 8;
+    buflen -= 8;
+
+    while (buflen >= 8) {
+        count++;
+        if (parse_dmap_header(metadata, dmap_tag, &datalen)) {
+            printf("invalid DMAP header:  tag = [%s],  datalen = %d\n", dmap_tag, datalen);
+            return;
+        }
+        metadata += 8;
+        buflen -= 8;
+        printf("item %d: tag: %s len: %d\n",count, dmap_tag, datalen);
+        metadata += datalen;
+        buflen -= datalen;
+    }
+    if (buflen != 0) {
+      printf("%d bytes of metadata were not processed\n", buflen);
+    }
+}
+
 void print_content(const xtxp_message &msg, const char * msg_type) {
   if (msg.content_length <= 0) return;
   int len = msg.content_length;
   if (!msg.content_type.compare(APPLICATION_BINARY_PLIST)) {  
-      printf("----------------------begin %s plist ---------------------------\n", msg_type);
+      printf("--------------------begin %s plist ----------------------------------\n", msg_type);
       plist_print_xml(msg.content.data(), (uint32_t)msg.content.size());
-      printf("----------------------end %s plist -----------------------------\n", msg_type);
+      printf("--------------------end %s plist ------------------------------------\n", msg_type);
   } else   if (!msg.content_type.compare(APPLICATION_MPEGURL)) {
+  
   } else   if (!msg.content_type.compare(APPLICATION_OCTET_STREAM)) {
     printf("----------------------begin %s octet_stream ---------------------------\n", msg_type);
     printf(" %2.2x ",msg.content[0]);
@@ -141,12 +199,26 @@ void print_content(const xtxp_message &msg, const char * msg_type) {
       printf("%2.2x ", msg.content[i]);
     }
     printf("\n");
-    printf("----------------------end %s octent stream -----------------------------\n", msg_type);
+    printf("----------------------end %s octet stream -----------------------------\n", msg_type);
   } else   if (!msg.content_type.compare(APPLICATION_DMAP_TAGGED)) {
+    printf("----------------------begin %s tagged dmap data------------------------\n", msg_type);
+    parse_metadata((const void *) &msg.content[0], len);
+    printf("----------------------end %s tagged dmap data--------------------------\n", msg_type);
   } else   if (!msg.content_type.compare(TEXT_APPLE_PLIST_XML)) {
+    printf("----------------------begin %s plist_xml-------------------------------\n", msg_type);
+    std::string content(msg.content.begin(),msg.content.end());
+    printf("%s",content.c_str());
+    printf("----------------------end %s plist_xml---------------------------------\n", msg_type);
   } else   if (!msg.content_type.compare(TEXT_PARAMETERS)) {
-  } else   if (!msg.content_type.compare(IMAGE_JPEG)) {
-  } else   if (!msg.content_type.compare(IMAGE_PNG)) {
+    printf("----------------------begin %s text parameters ------------------------\n", msg_type);
+    std::string content(msg.content.begin(),msg.content.end());
+    printf("%s\n",content.c_str());
+    printf("----------------------end %s text parameters --------------------------\n", msg_type);
+    printf("\n");
+  } else   if (!msg.content_type.compare(IMAGE_JPEG) || !msg.content_type.compare(IMAGE_PNG)) {
+    printf("----------------------begin %s image data -----------------------------\n", msg_type);
+    printf("image type %s, image size %d\n", msg.content_type, (int) msg.content_length);
+    printf("----------------------end %s image data -------------------------------\n", msg_type);
   } else {
     printf("Unknown content_type %s\n", msg.content_type);
   }

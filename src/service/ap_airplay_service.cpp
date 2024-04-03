@@ -67,11 +67,11 @@ ap_airplay_connection::~ap_airplay_connection() {
 }
 
 uint64_t ap_airplay_connection::get_session_id() {
-  printf("*** ap_airplay_connection::get_session_id\n");
+  printf("*** ap_airplay_connection::get_session_id: %llu\n", session_id_);
   return session_id_; }
 
 uint32_t ap_airplay_connection::get_session_type() {
-  printf("*** ap_airplay_connection::get_session_type\n");
+  printf("*** ap_airplay_connection::get_session_type: %s\n", session_type_);
   return session_type_; }
 
 void ap_airplay_connection::set_mirroring_handler(ap_mirroring_session_handler_ptr handler) {
@@ -1036,12 +1036,12 @@ void ap_airplay_connection::add_common_header(const request &req, response &res)
 }
 
 void ap_airplay_connection::init_session_id() {
-  printf("*** ap_airplay_connection::init_session_id\n");
   auto address = (uint64_t)this;
   uint64_t timestamp =
       std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
           .count();
   session_id_ = (timestamp << 32) | (address & 0x0ffffffff);
+  printf("*** ap_airplay_connection::init_session_id: %llu\n");
 }
 
 void ap_airplay_connection::validate_user_agent(const request &req) {
